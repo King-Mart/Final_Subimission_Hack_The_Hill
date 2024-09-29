@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import './App.css'; // Ensure your styles are correctly imported
 
+// Helper function to generate random unique tasks
 const generateRandomTasks = (numTasks) => {
   const taskNames = [
     "Complete Report",
@@ -29,21 +30,26 @@ const generateRandomTasks = (numTasks) => {
   ];
 
   const tasks = [];
-  for (let i = 0; i < numTasks; i++) {
-    const randomNameIndex = Math.floor(Math.random() * taskNames.length);
-    const randomDescIndex = Math.floor(Math.random() * taskDescriptions.length);
-    tasks.push({
-      name: taskNames[randomNameIndex],
-      description: taskDescriptions[randomDescIndex],
-    });
+  const usedTaskIndices = new Set(); // Keep track of used indices
+
+  while (tasks.length < numTasks) {
+    const randomIndex = Math.floor(Math.random() * taskNames.length);
+    if (!usedTaskIndices.has(randomIndex)) {
+      usedTaskIndices.add(randomIndex); // Mark task as used
+      tasks.push({
+        name: taskNames[randomIndex],
+        description: taskDescriptions[randomIndex],
+      });
+    }
   }
+
   return tasks;
 };
 
 function App() {
   // Helper function to generate random tasks
 
-  const [tasks, setTasks] = useState(generateRandomTasks(5));
+  const [tasks, setTasks] = useState(generateRandomTasks(Math.ceil(Math.random() * 5)));
 
   return (
     <>
