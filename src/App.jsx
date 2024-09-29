@@ -31,6 +31,7 @@ const generateRandomTasks = (numTasks) => {
 
   const tasks = [];
   const usedTaskIndices = new Set(); // Keep track of used indices
+  let _id = 0; // Initialize ID for tasks
 
   while (tasks.length < numTasks) {
     const randomIndex = Math.floor(Math.random() * taskNames.length);
@@ -39,6 +40,7 @@ const generateRandomTasks = (numTasks) => {
       tasks.push({
         name: taskNames[randomIndex],
         description: taskDescriptions[randomIndex],
+        id: ++_id, // Increment ID for unique identification
       });
     }
   }
@@ -47,9 +49,14 @@ const generateRandomTasks = (numTasks) => {
 };
 
 function App() {
-  // Helper function to generate random tasks
-
+  // Generate random tasks between 1 to 5 tasks
   const [tasks, setTasks] = useState(generateRandomTasks(Math.ceil(Math.random() * 5)));
+
+  // Handle task completion and remove the task from the list
+  const handleTaskCompletion = (taskId) => {
+    const updatedTasks = tasks.filter((task) => task.id !== taskId);
+    setTasks(updatedTasks); // Update the tasks state
+  };
 
   return (
     <>
@@ -61,19 +68,27 @@ function App() {
         <div className="body-container">
           {/* Left section with task details */}
           <div className="left-section">
-            {tasks.map((task, index) => (
-              <div className="today-task" key={index}>
-                <h2>{task.name}</h2>
-                <p>{task.description}</p>
-              </div>
-            ))}
+            {tasks.length > 0 ? (
+              tasks.map((task) => (
+                <div className="today-task" key={task.id}>
+                  <h2>{task.name}</h2>
+                  <p>{task.description}</p>
+                  <button
+                    className="complete-task-button"
+                    onClick={() => handleTaskCompletion(task.id)}
+                  >
+                    Completed Task
+                  </button>
+                </div>
+              ))
+            ) : (
+              <p>No tasks left!</p> // Show message when no tasks remain
+            )}
           </div>
 
-
-          <div className="middle-section">
-
-          </div>
-          <img
+          {/* Middle section (currently empty) */}
+          <div className="middle-section"></div>
+       <img
               width="285%"
               height="100%"
               src="https://64.media.tumblr.com/75a524b1f0602a25c68252eaa0609aae/c9a46006dfec030c-0f/s500x750/e35254989972e139522185aa295325b2fa5df6b8.pnj"
@@ -81,10 +96,11 @@ function App() {
               className="task-image"
             />
 
-          {/* Right section with the complete task button */}
+          {/* Right section with a button */}
           <div className="right-section">
-            <button type="button" className="complete-task-button">
-              Complete the Task
+            <button className="previou-day">Previous day</button>
+            <button type="button" className="next day">
+              Next day
             </button>
           </div>
         </div>
